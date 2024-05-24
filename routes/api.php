@@ -15,7 +15,7 @@ Route::put('/products/{id}', [ProductosController::class, 'update']);
 Route::delete('/products/{id_productos}', [ProductosController::class, 'destroy']);
 Route::get('/products/category/{id}', [ProductosController::class, 'buscarPorCategoria']);
 
-Route::get('/productsInCart', [ProductosEnCarritoController::class, 'productosPorCarrito']);
+Route::get('/productsInCart/{id_carrito}', [ProductosEnCarritoController::class, 'productosPorCarrito']);
 Route::post('/productsInCart', [ProductosEnCarritoController::class, 'agregarProducto']);
 Route::post('/productsInCart/disminuirCantidad', [ProductosEnCarritoController::class, 'disminuirCantidad']);
 Route::post('/productsInCart/aumentarCantidad', [ProductosEnCarritoController::class, 'aumentarCantidad']);
