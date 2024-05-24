@@ -50,7 +50,7 @@ class CarritosController extends Controller
             if ($existingCarrito) {
                 $data = [
                     'message' => 'Carrito ya existe para este usuario',
-                    'carrito_id' => $existingCarrito->id,
+                    'carrito_id' => $existingCarrito->id_carritos,
                     'status' => 200
                 ];
                 return response()->json($data, 200);
