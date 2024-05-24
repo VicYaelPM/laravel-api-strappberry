@@ -136,40 +136,16 @@ class ProductosController extends Controller
             return response()->json($data, 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|max:255',
-            'precio' => 'required',
-            'descripcion' => 'required',
-            'id_categoria' => 'required|exists:categoria_productos,id_categoria_productos',
-            'peso' => 'required',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-        ]);
+        // Actualizar solo los campos que se envían en la solicitud
+        $producto->fill($request->json()->all());
 
-        if ($validator->fails()) {
-            $data = [
-                'message' => 'Error en la validación de los datos',
-                'errors' => $validator->errors(),
-                'status' => 400
-            ];
-            return response()->json($data, 400);
-        }
-
+        // Subir la imagen si se adjunta en la solicitud
         if ($request->hasFile('imagen')) {
-            // Eliminar la imagen antigua si existe
-            if ($producto->imagen) {
-                Storage::disk('public')->delete($producto->imagen);
-            }
-            $producto->imagen = $request->file('imagen')->store('imagenes', 'public');
+            $imagenPath = $request->file('imagen')->store('imagenes', 'public');
+            $producto->imagen = $imagenPath;
         }
 
-        $producto->nombre = $request->nombre;
-        $producto->precio = $request->precio;
-        $producto->descripcion = $request->descripcion;
-        $producto->id_categoria = $request->id_categoria;
-        $producto->precio_con_descuento = $request->precio_con_descuento;
-        $producto->peso = $request->peso;
-        $producto->estatus = $request->estatus;
-
+        // Guardar el producto actualizado
         $producto->save();
 
         $data = [
@@ -180,6 +156,7 @@ class ProductosController extends Controller
 
         return response()->json($data, 200);
     }
+
     public function buscarPorCategoria($id_categoria)
     {
         $productos = Productos::with('categoria')->where('id_categoria', $id_categoria)->get();
