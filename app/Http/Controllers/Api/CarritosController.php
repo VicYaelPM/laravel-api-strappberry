@@ -45,6 +45,18 @@ class CarritosController extends Controller
             return response()->json($data, 400);
         }
 
+        if ($request->filled('id_user')) {
+            $existingCarrito = Carritos::where('id_user', $request->id_user)->first();
+            if ($existingCarrito) {
+                $data = [
+                    'message' => 'Carrito ya existe para este usuario',
+                    'carrito_id' => $existingCarrito->id,
+                    'status' => 200
+                ];
+                return response()->json($data, 200);
+            }
+        }
+
         $carrito = Carritos::create($request->all());
 
         if (!$carrito) {
@@ -62,7 +74,6 @@ class CarritosController extends Controller
 
         return response()->json($data, 201);
     }
-
     public function show($id)
     {
         $carrito = Carritos::find($id);
@@ -111,7 +122,7 @@ class CarritosController extends Controller
 
         $carrito->id_user = $request->id_user;
         $carrito->costo_total = $request->costo_total;
-        
+
         $carrito->save();
 
         $data = [
